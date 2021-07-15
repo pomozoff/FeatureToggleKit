@@ -7,8 +7,8 @@
 
 import Foundation
 
-class PlistSource {
-    init(fileUrl: URL) {
+public class PlistSource {
+    public init(fileUrl: URL) {
         self.fileUrl = fileUrl
     }
 
@@ -16,11 +16,9 @@ class PlistSource {
 }
 
 extension PlistSource: Source {
-    func fetch() -> [Feature] {
-        guard let path = Bundle.main.path(forResource: fileUrl.absoluteString, ofType: ""),
-              let xml = FileManager.default.contents(atPath: path),
-              let plist = try? PropertyListSerialization.propertyList(from: xml, options: .mutableContainersAndLeaves, format: nil),
-              let features = plist as? [Feature]
+    public func fetch() -> [Feature] {
+        guard let xml = FileManager.default.contents(atPath: fileUrl.path),
+              let features = try? PropertyListDecoder().decode([Feature].self, from: xml)
         else { return [] }
         return features
     }

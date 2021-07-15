@@ -7,8 +7,8 @@
 
 import Foundation
 
-class Provider {
-    init(sources: [Source]) {
+public class Provider {
+    public init(sources: [Source]) {
         self.sources = sources
     }
 

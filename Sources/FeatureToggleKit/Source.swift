@@ -7,6 +7,6 @@
 
 import Foundation
 
-protocol Source {
+public protocol Source {
     func fetch() -> [Feature]
 }

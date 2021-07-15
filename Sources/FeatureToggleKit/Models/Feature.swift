@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Feature {
+public struct Feature {
     let id: Int
     let name: String
     let enabled: Bool

@@ -7,11 +7,11 @@
 
 import Foundation
 
-class FirebaseSource {}
+public class FirebaseSource {}
 
 extension FirebaseSource: Source {
     // TODO: Implement later
-    func fetch() -> [Feature] {
+    public func fetch() -> [Feature] {
         []
     }
 }

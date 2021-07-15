@@ -7,8 +7,8 @@
 
 import Foundation
 
-class JSONSource {
-    init(fileUrl: URL) {
+public class JSONSource {
+    public init(fileUrl: URL) {
         self.fileUrl = fileUrl
     }
 
@@ -16,7 +16,7 @@ class JSONSource {
 }
 
 extension JSONSource: Source {
-    func fetch() -> [Feature] {
+    public func fetch() -> [Feature] {
         guard let data = try? Data(contentsOf: fileUrl),
               let features = try? JSONDecoder().decode([Feature].self, from: data)
         else { return [] }
