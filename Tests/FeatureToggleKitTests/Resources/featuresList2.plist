@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+    <dict>
+        <key>id</key>
+        <integer>1</integer>
+        <key>name</key>
+        <string>plus</string>
+        <key>enabled</key>
+        <true/>
+    </dict>
+    <dict>
+        <key>id</key>
+        <integer>2</integer>
+        <key>name</key>
+        <string>minus</string>
+        <key>enabled</key>
+        <false/>
+    </dict>
+</array>
+</plist>
