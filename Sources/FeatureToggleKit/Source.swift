@@ -7,6 +7,10 @@
 
 import Foundation
 
-public protocol Source {
-    func fetch() -> [Feature]
+public protocol Source: AnyObject {
+    
+}
+
+protocol Fetchable: AnyObject {
+    func fetch(completion: @escaping (Result<[Feature], Swift.Error>) -> Void)
 }

@@ -7,7 +7,14 @@
 
 import Foundation
 
-public class Provider {
+public protocol Target {
+    var name: String { get }
+}
+
+public class Provider<T: Target> {
+    /**
+     - Parameter sources: The list of feature sources
+     */
     public init(sources: [Source]) {
         self.sources = sources
     }

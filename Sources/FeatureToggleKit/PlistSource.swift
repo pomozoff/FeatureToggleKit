@@ -15,11 +15,23 @@ public class PlistSource {
     private let fileUrl: URL
 }
 
-extension PlistSource: Source {
-    public func fetch() -> [Feature] {
-        guard let xml = FileManager.default.contents(atPath: fileUrl.path),
-              let features = try? PropertyListDecoder().decode([Feature].self, from: xml)
-        else { return [] }
-        return features
+extension PlistSource: Source {}
+
+extension PlistSource: Fetchable {
+    enum Error: Swift.Error {
+        case noContent
+    }
+
+    func fetch(completion: @escaping (Result<[Feature], Swift.Error>) -> Void) {
+        guard let xml = FileManager.default.contents(atPath: fileUrl.path) else {
+            return completion(.failure(Error.noContent))
+        }
+
+        do {
+            let features = try PropertyListDecoder().decode([Feature].self, from: xml)
+            completion(.success(features))
+        } catch {
+            completion(.failure(error))
+        }
     }
 }

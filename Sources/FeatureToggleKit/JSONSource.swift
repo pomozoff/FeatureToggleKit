@@ -13,13 +13,33 @@ public class JSONSource {
     }
 
     private let fileUrl: URL
+    private let decoder: JSONDecoder = {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return decoder
+    }()
 }
 
-extension JSONSource: Source {
-    public func fetch() -> [Feature] {
-        guard let data = try? Data(contentsOf: fileUrl),
-              let features = try? JSONDecoder().decode([Feature].self, from: data)
-        else { return [] }
-        return features
+extension JSONSource: Source {}
+
+extension JSONSource: Fetchable {
+    enum Error: Swift.Error {
+        case noContent
+    }
+
+    func fetch(completion: @escaping (Result<[Feature], Swift.Error>) -> Void) {
+        let data: Data
+        do {
+            data = try Data(contentsOf: fileUrl)
+        } catch {
+            return completion(.failure(Error.noContent))
+        }
+
+        do {
+            let features = try decoder.decode([Feature].self, from: data)
+            completion(.success(features))
+        } catch {
+            completion(.failure(error))
+        }
     }
 }

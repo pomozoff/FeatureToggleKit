@@ -7,10 +7,11 @@
 
 import Foundation
 
-public struct Feature {
+struct Feature {
     let id: Int
     let name: String
     let enabled: Bool
+    let till: Date?
 }
 
 extension Feature: Decodable {}
