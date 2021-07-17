@@ -12,13 +12,13 @@ import Foundation
  The provider contains a list of feature sources where features could be fetched from.
  */
 public class Provider<Model: DecodableFeature, Storage: Feature> {
-    public init(sources: [AnySource<Model>], mapper: @escaping (Model) -> Storage) {
+    public init(sources: [AnySource<Model>], mapper: @escaping (Model) -> Storage?) {
         self.sources = sources
         self.mapper = mapper
     }
 
     private let sources: [AnySource<Model>]
-    private let mapper: (Model) -> Storage
+    private let mapper: (Model) -> Storage?
     private let featuresUpdateSemaphore = DispatchSemaphore(value: 1)
 
     @Atomic
@@ -40,7 +40,9 @@ extension Provider {
                     self.featuresUpdateSemaphore.wait()
 
                     self.features = features.reduce(into: self.features) { result, feature in
-                        result[self.mapper(feature)] = feature.isEnabled
+                        self.mapper(feature).map {
+                            result[$0] = feature.isEnabled
+                        }
                     }
 
                     self.featuresUpdateSemaphore.signal()
