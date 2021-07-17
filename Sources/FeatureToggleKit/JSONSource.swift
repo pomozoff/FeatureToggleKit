@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class JSONSource<T: Feature> {
+public class JSONSource<T: DecodableFeature> {
     public init(fileUrl: URL) {
         self.fileUrl = fileUrl
     }

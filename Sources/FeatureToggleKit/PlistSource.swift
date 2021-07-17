@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class PlistSource<T: Feature> {
+public class PlistSource<T: DecodableFeature> {
     public init(fileUrl: URL) {
         self.fileUrl = fileUrl
     }

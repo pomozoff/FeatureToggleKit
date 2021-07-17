@@ -7,7 +7,9 @@
 
 import Foundation
 
-public protocol Feature: Hashable, Decodable {
+public typealias DecodableFeature = Feature & Decodable
+
+public protocol Feature: Hashable {
     var name: String { get }
     var isEnabled: Bool { get }
 }

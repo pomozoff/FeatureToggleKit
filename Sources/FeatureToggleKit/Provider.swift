@@ -11,7 +11,7 @@ import Foundation
 /**
  The provider contains a list of feature sources where features could be fetched from.
  */
-public class Provider<Model: Feature, Storage: Feature> {
+public class Provider<Model: DecodableFeature, Storage: Feature> {
     public init(sources: [AnySource<Model>], mapper: @escaping (Model) -> Storage) {
         self.sources = sources
         self.mapper = mapper
