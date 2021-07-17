@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class JSONSource {
+public class JSONSource<T: Feature> {
     public init(fileUrl: URL) {
         self.fileUrl = fileUrl
     }
@@ -20,14 +20,12 @@ public class JSONSource {
     }()
 }
 
-extension JSONSource: Source {}
-
-extension JSONSource: Fetchable {
+extension JSONSource: Source {
     enum Error: Swift.Error {
         case noContent
     }
 
-    func fetch(completion: @escaping (Result<[Feature], Swift.Error>) -> Void) {
+    public func fetch(completion: @escaping (Result<[T], Swift.Error>) -> Void) {
         let data: Data
         do {
             data = try Data(contentsOf: fileUrl)
@@ -36,7 +34,7 @@ extension JSONSource: Fetchable {
         }
 
         do {
-            let features = try decoder.decode([Feature].self, from: data)
+            let features = try decoder.decode([T].self, from: data)
             completion(.success(features))
         } catch {
             completion(.failure(error))

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class PlistSource {
+public class PlistSource<T: Feature> {
     public init(fileUrl: URL) {
         self.fileUrl = fileUrl
     }
@@ -15,20 +15,18 @@ public class PlistSource {
     private let fileUrl: URL
 }
 
-extension PlistSource: Source {}
-
-extension PlistSource: Fetchable {
+extension PlistSource: Source {
     enum Error: Swift.Error {
         case noContent
     }
 
-    func fetch(completion: @escaping (Result<[Feature], Swift.Error>) -> Void) {
+    public func fetch(completion: @escaping (Result<[T], Swift.Error>) -> Void) {
         guard let xml = FileManager.default.contents(atPath: fileUrl.path) else {
             return completion(.failure(Error.noContent))
         }
 
         do {
-            let features = try PropertyListDecoder().decode([Feature].self, from: xml)
+            let features = try PropertyListDecoder().decode([T].self, from: xml)
             completion(.success(features))
         } catch {
             completion(.failure(error))

@@ -8,7 +8,7 @@ final class FeatureToggleKitTests: XCTestCase {
         }
 
         let expectation = XCTestExpectation(description: "Fetch features from a plist file")
-        PlistSource(fileUrl: url).fetch { result in
+        PlistSource<FeatureModel>(fileUrl: url).fetch { result in
             switch result {
             case let .success(features):
                 XCTAssert(features.count == 2, "Invalid count of features")
@@ -27,7 +27,7 @@ final class FeatureToggleKitTests: XCTestCase {
         }
 
         let expectation = XCTestExpectation(description: "Fetch features from a JSON file")
-        JSONSource(fileUrl: url).fetch { result in
+        JSONSource<FeatureModel>(fileUrl: url).fetch { result in
             switch result {
             case let .success(features):
                 XCTAssert(features.count == 3, "Invalid count of features")

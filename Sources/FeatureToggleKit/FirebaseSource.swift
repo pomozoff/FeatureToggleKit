@@ -7,16 +7,14 @@
 
 import Foundation
 
-public class FirebaseSource {}
+public class FirebaseSource<T: Feature> {}
 
-extension FirebaseSource: Source {}
-
-extension FirebaseSource: Fetchable {
+extension FirebaseSource: Source {
     enum Error: Swift.Error {
         case noContent
     }
 
-    func fetch(completion: @escaping (Result<[Feature], Swift.Error>) -> Void) {
+    public func fetch(completion: @escaping (Result<[T], Swift.Error>) -> Void) {
         // TODO: Implement later
         completion(.failure(Error.noContent))
     }
