@@ -11,20 +11,18 @@ import Foundation
 /**
  The provider contains a list of feature sources where features could be fetched from.
  */
-public class Provider<T: Feature> {
-    public static func createProvider(with sources: [AnySource<T>]) -> Provider<T> {
-        .init(sources: sources)
-    }
-
-    init(sources: [AnySource<T>]) {
+public class Provider<Model: Feature, Storage: Feature> {
+    public init(sources: [AnySource<Model>], mapper: @escaping (Model) -> Storage) {
         self.sources = sources
+        self.mapper = mapper
     }
 
-    private let sources: [AnySource<T>]
+    private let sources: [AnySource<Model>]
+    private let mapper: (Model) -> Storage
     private let featuresUpdateSemaphore = DispatchSemaphore(value: 1)
 
     @Atomic
-    private var features: [T: Bool] = [:]
+    private var features: [Storage: Bool] = [:]
 }
 
 extension Provider {
@@ -32,7 +30,7 @@ extension Provider {
      Fetch available features from sources of the provider.
      Features from the latest sources override previous ones.
      */
-    public func fetch(features: [T], completion: @escaping (Result<Void, Error>) -> Void) {
+    public func fetch(features: [Model], completion: @escaping (Result<Void, Error>) -> Void) {
         for source in sources {
             source.fetch { [weak self] result in
                 guard let self = self else { return }
@@ -42,7 +40,7 @@ extension Provider {
                     self.featuresUpdateSemaphore.wait()
 
                     self.features = features.reduce(into: self.features) { result, feature in
-                        result[feature] = feature.isEnabled
+                        result[self.mapper(feature)] = feature.isEnabled
                     }
 
                     self.featuresUpdateSemaphore.signal()
@@ -58,7 +56,7 @@ extension Provider {
      Check if the feature is enabled.
      If the feature is absent it is disabled.
      */
-    public func isFeatureEnabled(_ feature: T) -> Bool {
+    public func isFeatureEnabled(_ feature: Storage) -> Bool {
         features[feature] ?? false
     }
 }
