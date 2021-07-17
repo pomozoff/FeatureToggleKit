@@ -29,6 +29,11 @@ extension Provider {
     /**
      Fetch available features from sources of the provider.
      Features from the latest sources override previous ones.
+
+     Successful completion closure will be called for each source successfully fetched, e.g.,
+     there are three sources, and features from all of them are fetched without errors,
+     then the completion closure will be called three times. This allows a client to start
+     updating UI as soon as the fastest source returns features.
      */
     public func fetch(features: [Model], completion: @escaping (Result<Void, Error>) -> Void) {
         for source in sources {
@@ -50,8 +55,8 @@ extension Provider {
                     return completion(.failure(error)) // TODO: Create chained error list
                 }
             }
+            completion(.success(()))
         }
-        completion(.success(()))
     }
 
     /**
