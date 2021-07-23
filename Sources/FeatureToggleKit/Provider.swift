@@ -35,23 +35,22 @@ extension Provider {
      */
     public func fetch(completion: @escaping (Result<Void, Error>) -> Void) {
         for source in sources {
+            self.featuresUpdateSemaphore.wait()
+
             source.fetch { [weak self] result in
                 guard let self = self else { return }
 
                 switch result {
                 case let .success(models):
-                    self.featuresUpdateSemaphore.wait()
-
                     self.features = models.reduce(into: self.features) { result, model in
                         result[model.name] = model.isEnabled
                     }
-
-                    self.featuresUpdateSemaphore.signal()
+                    completion(.success(()))
                 case let .failure(error):
-                    return completion(.failure(error)) // TODO: Create chained error list
+                    completion(.failure(error)) // TODO: Create chained error list
                 }
+                self.featuresUpdateSemaphore.signal()
             }
-            completion(.success(()))
         }
     }
 
