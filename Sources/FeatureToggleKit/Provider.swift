@@ -20,7 +20,7 @@ public class Provider<M: DecodableFeature> {
     private let featuresUpdateSemaphore = DispatchSemaphore(value: 1)
 
     @Atomic
-    private var features: [String: Bool] = [:]
+    private var features: [String: M] = [:]
 }
 
 extension Provider {
@@ -43,7 +43,7 @@ extension Provider {
                 switch result {
                 case let .success(models):
                     self.features = models.reduce(into: self.features) { result, model in
-                        result[model.name] = model.isEnabled
+                        result[model.name] = model
                     }
                     completion(.success(()))
                 case let .failure(error):
@@ -59,6 +59,10 @@ extension Provider {
      If the feature is absent it is disabled.
      */
     public func isFeatureEnabled(name: String) -> Bool {
-        features[name] ?? false
+        features[name]?.isEnabled ?? false
+    }
+
+    public func model(with name: String) -> M? {
+        features[name]
     }
 }
