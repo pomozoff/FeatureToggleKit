@@ -16,6 +16,6 @@ extension FirebaseSource: Source {
 
     public func fetch(completion: @escaping (Result<[T], Swift.Error>) -> Void) {
         // TODO: Implement later
-        completion(.failure(Error.noContent))
+        return completion(.failure(FeatureError(code: .noContent)))
     }
 }

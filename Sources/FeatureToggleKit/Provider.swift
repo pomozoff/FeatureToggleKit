@@ -47,7 +47,7 @@ extension Provider {
                     }
                     completion(.success(()))
                 case let .failure(error):
-                    completion(.failure(error)) // TODO: Create chained error list
+                    completion(.failure(error))
                 }
                 self.featuresUpdateSemaphore.signal()
             }

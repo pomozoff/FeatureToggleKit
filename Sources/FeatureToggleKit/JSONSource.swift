@@ -21,23 +21,19 @@ public class JSONSource<T: DecodableFeature> {
 }
 
 extension JSONSource: Source {
-    enum Error: Swift.Error {
-        case noContent
-    }
-
     public func fetch(completion: @escaping (Result<[T], Swift.Error>) -> Void) {
         let data: Data
         do {
             data = try Data(contentsOf: fileUrl)
         } catch {
-            return completion(.failure(Error.noContent))
+            return completion(.failure(FeatureError(code: .noContent)))
         }
 
         do {
             let features = try decoder.decode([T].self, from: data)
             completion(.success(features))
         } catch {
-            completion(.failure(error))
+            completion(.failure(FeatureError(code: .decode, underlying: error)))
         }
     }
 }

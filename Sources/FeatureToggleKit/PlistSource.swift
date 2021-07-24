@@ -16,20 +16,16 @@ public class PlistSource<T: DecodableFeature> {
 }
 
 extension PlistSource: Source {
-    enum Error: Swift.Error {
-        case noContent
-    }
-
     public func fetch(completion: @escaping (Result<[T], Swift.Error>) -> Void) {
         guard let xml = FileManager.default.contents(atPath: fileUrl.path) else {
-            return completion(.failure(Error.noContent))
+            return completion(.failure(FeatureError(code: .noContent)))
         }
 
         do {
             let features = try PropertyListDecoder().decode([T].self, from: xml)
             completion(.success(features))
         } catch {
-            completion(.failure(error))
+            completion(.failure(FeatureError(code: .decode, underlying: error)))
         }
     }
 }
