@@ -23,7 +23,7 @@ public class Provider<M: DecodableFeature> {
     private var features: [String: M] = [:]
 }
 
-extension Provider {
+extension Provider: Providable {
     /**
      Fetch available features from sources of the provider.
      Features from the latest sources override previous ones.
@@ -33,7 +33,7 @@ extension Provider {
      then the completion closure will be called three times. This allows a client to start
      updating UI as soon as the fastest source returns features.
      */
-    public func fetch(completion: @escaping (Result<Void, Error>) -> Void) {
+    public func fetch(completion: @escaping (Result<Void, ProviderError>) -> Void) {
         for source in sources {
             self.featuresUpdateSemaphore.wait()
 
@@ -47,7 +47,7 @@ extension Provider {
                     }
                     completion(.success(()))
                 case let .failure(error):
-                    completion(.failure(error))
+                    completion(.failure(ProviderError(code: .fetch, underlying: error)))
                 }
                 self.featuresUpdateSemaphore.signal()
             }
