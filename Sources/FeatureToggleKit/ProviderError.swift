@@ -22,5 +22,6 @@ public enum ProviderErrorCode: Int, BaseErrorCode {
 
 public class ProviderError: BaseError<ProviderErrorCode> {
     public override var domainShortName: String { "PR" }
+    public override var localizedFailureReason: String? { errorCode.localizedDescription }
 }
 
