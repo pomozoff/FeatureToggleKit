@@ -22,18 +22,20 @@ public class JSONSource<T: DecodableFeature> {
 
 extension JSONSource: Source {
     public func fetch(completion: @escaping (Result<[T], Swift.Error>) -> Void) {
-        let data: Data
-        do {
-            data = try Data(contentsOf: fileUrl)
-        } catch {
-            return completion(.failure(FeatureError(code: .noContent)))
-        }
+        DispatchQueue.global().async {
+            let data: Data
+            do {
+                data = try Data(contentsOf: self.fileUrl)
+            } catch {
+                return completion(.failure(FeatureError(code: .noContent)))
+            }
 
-        do {
-            let features = try decoder.decode([T].self, from: data)
-            completion(.success(features))
-        } catch {
-            completion(.failure(FeatureError(code: .decode, underlying: error)))
+            do {
+                let features = try self.decoder.decode([T].self, from: data)
+                completion(.success(features))
+            } catch {
+                completion(.failure(FeatureError(code: .decode, underlying: error)))
+            }
         }
     }
 }

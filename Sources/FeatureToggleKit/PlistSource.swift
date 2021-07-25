@@ -17,15 +17,17 @@ public class PlistSource<T: DecodableFeature> {
 
 extension PlistSource: Source {
     public func fetch(completion: @escaping (Result<[T], Swift.Error>) -> Void) {
-        guard let xml = FileManager.default.contents(atPath: fileUrl.path) else {
-            return completion(.failure(FeatureError(code: .noContent)))
-        }
+        DispatchQueue.global().async {
+            guard let xml = FileManager.default.contents(atPath: self.fileUrl.path) else {
+                return completion(.failure(FeatureError(code: .noContent)))
+            }
 
-        do {
-            let features = try PropertyListDecoder().decode([T].self, from: xml)
-            completion(.success(features))
-        } catch {
-            completion(.failure(FeatureError(code: .decode, underlying: error)))
+            do {
+                let features = try PropertyListDecoder().decode([T].self, from: xml)
+                completion(.success(features))
+            } catch {
+                completion(.failure(FeatureError(code: .decode, underlying: error)))
+            }
         }
     }
 }
